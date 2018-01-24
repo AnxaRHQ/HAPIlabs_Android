@@ -83,6 +83,10 @@ public class JsonGetMealResponseHandler extends JsonDefaultResponseHandler {
                 if (JsonUtil.getMeal(meal_res, offsetInMillis) != null)
                     mealObj = JsonUtil.getMeal(meal_res, offsetInMillis);
 
+
+                if (mealObj.isHapiForkMeal)
+                    mealObj.isPairedWithHapicoach = true;
+
                 //transfer the message obj to the response handler
                 setResponseObj(mealObj);
 

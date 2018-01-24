@@ -59,6 +59,40 @@
             android:scaleType="centerInside"
             android:background="#efefef" />
 
+        <RelativeLayout
+            android:id="@+id/hapifork_new_layout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignBottom="@+id/mealphoto"
+            android:orientation="horizontal"
+            android:background="#7F333333">
+
+            <TextView
+                android:id="@+id/hapifork_discard_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/text_white"
+                android:text="@string/btn_discard"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/hapifork_save_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/rounded_button_orange_borderless"
+                android:text="@string/btn_save_meal"
+                android:textColor="@color/text_white"
+                android:gravity="right"
+                android:layout_marginRight="10dp"/>
+
+            </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/multiPhoto_layout"
             android:layout_width="match_parent"
@@ -66,7 +100,8 @@
             android:layout_alignBottom="@+id/mealphoto"
             android:orientation="horizontal"
             android:weightSum="5"
-            android:background="#7F333333">
+            android:background="#7F333333"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/mealphoto1"
@@ -140,7 +175,7 @@
                 android:layout_height="wrap_content"
                android:layout_alignParentRight="true"
                 style="@style/btnStyleOrange"
-                android:text="@string/btn_savemeal"
+                android:text="@string/btn_save_meal"
                 android:padding="5dp"/>
         </RelativeLayout>
         >

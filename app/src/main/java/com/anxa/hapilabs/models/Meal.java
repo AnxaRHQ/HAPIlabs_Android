@@ -78,6 +78,14 @@ public class Meal {
     public boolean isHapiForkMeal;
     public boolean isPairedWithHapicoach;
 
+    public int mealDuration;
+    public int forkServing;
+    public int overSpeed;
+    public int averageInterval;
+    public int forkServingPerMin;
+    public float successRatio;
+    public float overSpeedRatio;
+
     public List<Photo> photos;
 
 

@@ -310,6 +310,7 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
         photoMain.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         photoMain.setImageResource(R.drawable.meal_addameal);
         ((LinearLayout) layout.findViewById(R.id.multiPhoto_layout)).setVisibility(View.GONE);
+        ((RelativeLayout) layout.findViewById(R.id.hapifork_new_layout)).setVisibility(View.GONE);
         ((TextView) layout.findViewById(R.id.mealdesc)).setVisibility(View.GONE);
         ((LinearLayout) layout.findViewById(R.id.icon_container)).setVisibility(View.GONE);
         ((LinearLayout) layout.findViewById(R.id.meal_uploadfailed)).setVisibility(View.GONE);
@@ -322,9 +323,7 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
         // set clickacble on meal info;
         ((ImageView) layout.findViewById(R.id.mealinfo)).setOnClickListener(listener);
         ((ImageView) layout.findViewById(R.id.mealinfo)).setTag(meal.meal_type);
-
-
-            ((TextView) layout.findViewById(R.id.mealtime)).setVisibility(View.VISIBLE);
+        ((TextView) layout.findViewById(R.id.mealtime)).setVisibility(View.VISIBLE);
 
         ////update meal_creation_date = date of the meal(date tab)
         ((TextView) layout.findViewById(R.id.mealtime)).setText(AppUtil.getMealTime(meal.meal_creation_date));
@@ -335,7 +334,6 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
         photoMain.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 //        ImageView photoCount = ((ImageView) layout.findViewById(R.id.mealphotoCount));
-
 
         if (meal.photos != null && meal.photos.size() > 0) {
             // photoMain.setTag(1);
@@ -384,6 +382,15 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
             }
 
         } else {
+            if (meal.isHapiForkMeal){
+                ((RelativeLayout) layout.findViewById(R.id.hapifork_new_layout)).setVisibility(View.VISIBLE);
+                ((TextView) layout.findViewById(R.id.hapifork_discard_meal)).setOnClickListener(listener);
+                (layout.findViewById(R.id.hapifork_discard_meal)).setTag(meal);
+
+                ((TextView) layout.findViewById(R.id.hapifork_save_meal)).setOnClickListener(listener);
+                (layout.findViewById(R.id.hapifork_save_meal)).setTag(meal);
+
+            }
             updatePhotoMain(null, photoMain, meal.meal_type, meal.isHapiForkMeal);
             ((LinearLayout) layout.findViewById(R.id.multiPhoto_layout)).setVisibility(View.GONE);
         }
@@ -496,12 +503,22 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
             ((LinearLayout) layout.findViewById(R.id.meal_uploadresume)).setVisibility(View.GONE);
         }
 
-        if(!meal.isHapiForkMeal) {
-            ((TextView) layout.findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(context, meal.meal_type));
+        if(meal.isHapiForkMeal) {
+            if (meal.isPairedWithHapicoach){
+                ((RelativeLayout) layout.findViewById(R.id.hapifork_new_layout)).setVisibility(View.GONE);
+
+                String mealTitle = AppUtil.getMealTitle(this.getContext(), meal.meal_type) + " " + this.getContext().getString(R.string.HAPIFORK_MEAL);
+                System.out.println("pariredwithhapicoach: " + mealTitle);
+                ((TextView) layout.findViewById(R.id.mealtitle)).setText(mealTitle);
+            }else {
+                ((TextView) layout.findViewById(R.id.mealtitle)).setText(meal.meal_description);
+                ((TextView) layout.findViewById(R.id.mealtime)).setVisibility(GONE);
+                ((TextView) layout.findViewById(R.id.mealdesc)).setVisibility(GONE);
+            }
+
         }else {
-            ((TextView) layout.findViewById(R.id.mealtitle)).setText(meal.meal_description);
-            ((TextView) layout.findViewById(R.id.mealtime)).setVisibility(GONE);
-            ((TextView) layout.findViewById(R.id.mealdesc)).setVisibility(GONE);
+            ((TextView) layout.findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(context, meal.meal_type));
+
         }
     }
 
@@ -642,45 +659,45 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
     }
     public void refreshWeightUI()
     {
-        if (weightItems.size() > 0 && weightItems != null) {
-            llWeight.setVisibility(LinearLayout.VISIBLE);
+        if (weightItems!=null) {
+            if (weightItems.size() > 0 && weightItems != null) {
+                llWeight.setVisibility(LinearLayout.VISIBLE);
 
-            sortWeight(weightItems);
+                sortWeight(weightItems);
 
-            List<Weight> weightList = new ArrayList<Weight>();
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-            if(weightItems.size() > 0) {
-                //today
-                if (fmt.format(ApplicationEx.getInstance().currentSelectedDate).equals(fmt.format(new Date()))) {
-                    weightList.add(weightItems.get(weightItems.size() - 1));
-                }else
-                {
-                    weightList.add(weightItems.get(0));
+                List<Weight> weightList = new ArrayList<Weight>();
+                SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+                if (weightItems.size() > 0) {
+                    //today
+                    if (fmt.format(ApplicationEx.getInstance().currentSelectedDate).equals(fmt.format(new Date()))) {
+                        weightList.add(weightItems.get(weightItems.size() - 1));
+                    } else {
+                        weightList.add(weightItems.get(0));
+                    }
+
+                }
+                //sort(weightItems);
+                WeightListAdapter weightAdapter = new WeightListAdapter(context, weightList);
+                weightAdapter.notifyDataSetChanged();
+
+                weightListView.invalidateViews();
+                weightListView.refreshDrawableState();
+
+                weightListView.setAdapter(weightAdapter);
+
+                setListViewHeightBasedOnChildren(weightListView);
+
+                if (isCheckedWeight(weightItems)) {
+                    isCheckedWeight.setVisibility(LinearLayout.VISIBLE);
+                } else {
+                    isCheckedWeight.setVisibility(LinearLayout.GONE);
                 }
 
-            }
-            //sort(weightItems);
-            WeightListAdapter weightAdapter = new WeightListAdapter(context, weightList);
-            weightAdapter.notifyDataSetChanged();
-
-            weightListView.invalidateViews();
-            weightListView.refreshDrawableState();
-
-            weightListView.setAdapter(weightAdapter);
-
-            setListViewHeightBasedOnChildren(weightListView);
-
-            if (isCheckedWeight(weightItems)) {
-                isCheckedWeight.setVisibility(LinearLayout.VISIBLE);
-            } else {
-                isCheckedWeight.setVisibility(LinearLayout.GONE);
-            }
-
-            weightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position,
-                                        long id) {
-                    Weight weight = (Weight) weightListView.getAdapter().getItem(position);
+                weightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        Weight weight = (Weight) weightListView.getAdapter().getItem(position);
 
 
                         ApplicationEx.getInstance().currentWeightView = weight;
@@ -691,10 +708,11 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
                         mainIntent.putExtra("FROM_NOTIF_3RD_PARTY", false);
                         context.startActivity(mainIntent);
 
-                }
-            });
-        } else {
-            llWeight.setVisibility(LinearLayout.GONE);
+                    }
+                });
+            } else {
+                llWeight.setVisibility(LinearLayout.GONE);
+            }
         }
     }
 
@@ -1054,7 +1072,11 @@ public class MealListFragment extends ScrollView implements DateChangeListener, 
             System.out.println("updatePhotoMain:  " + photo.photo_id);
             Bitmap bmp = ImageManager.getInstance().findImage(photo.photo_id);
             if (bmp == null) {
-                new DownloadImageTask(item, Integer.parseInt(photo.photo_id)).execute(photo.photo_url_large);
+                try {
+                    new DownloadImageTask(item, Integer.parseInt(photo.photo_id)).execute(photo.photo_url_large);
+                }catch(NumberFormatException e){
+                    e.printStackTrace();
+                }
             } else
                 item.setImageBitmap(bmp);
         } else {

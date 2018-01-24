@@ -101,7 +101,7 @@
     </style>
 
     <style name="blackNormal.Large">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
     <style name="blackNormal.ExtraLarge">

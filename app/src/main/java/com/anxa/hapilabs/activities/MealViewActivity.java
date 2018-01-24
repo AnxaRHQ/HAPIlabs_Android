@@ -49,12 +49,16 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -109,6 +113,8 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
 
     private LinearLayout coachRating_ll;
     private LinearLayout personalRating_ll;
+    private LinearLayout mealComments_ll;
+    private LinearLayout hapiforkMeal_ll;
     private RelativeLayout coachComments_rl;
     private RelativeLayout communityComments_rl;
     private RelativeLayout hapi4u_ll;
@@ -120,6 +126,8 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
     private RatingBar coachRatingBar;
     private RatingBar personalRatingBar;
     private View ratingSeparator;
+
+    private String [] mealTypeArray;
 
     private PopupMenu popupMenu;
     private CustomDialog dialog;
@@ -205,6 +213,10 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
             communityComments_rl.setSelected(true);
         }
 
+        if (currentMeal.isHapiForkMeal){
+            System.out.println("hapifork meal");
+            System.out.println("hapifork: " + currentMeal.meal_id);
+        }
 
         initUI();
 
@@ -293,6 +305,8 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
         //setup rating UI
         coachRating_ll = (LinearLayout) findViewById(R.id.coach_rating_container);
         personalRating_ll = (LinearLayout) findViewById(R.id.personal_rating_container);
+        mealComments_ll = (LinearLayout) findViewById(R.id.meal_comments_layout);
+        hapiforkMeal_ll = (LinearLayout) findViewById(R.id.meal_hapifork_stats_ll);
 
         personalRating_tv = (TextView) findViewById(R.id.personal_rating_text);
         coachRating_tv = (TextView) findViewById(R.id.coach_rating_text);
@@ -553,6 +567,33 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
             findViewById(R.id.header_right_tv).setVisibility(View.GONE);
 
             communityCommentsSelected();
+        }
+
+        //hapifork meal
+        if (currentMeal.isHapiForkMeal){
+            hapiforkMeal_ll.setVisibility(View.VISIBLE);
+
+            ((TextView) findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(this, currentMeal.meal_type) + " " +  getString(R.string.HAPIFORK_MEAL));
+
+            System.out.println("hapifork meal:" + AppUtil.getDurationFormat(currentMeal.mealDuration));
+            ((TextView) findViewById(R.id.hapifork_duration_value)).setText(AppUtil.getDurationFormat(currentMeal.mealDuration));
+
+            int activeSec = currentMeal.forkServing * currentMeal.averageInterval;
+
+            System.out.println("hapifork activeSec:" + activeSec + " forkserving: " + currentMeal.forkServing + " averageInterval: " + currentMeal.averageInterval);
+
+            ((TextView) findViewById(R.id.hapifork_active_min_value)).setText(AppUtil.getDurationFormat(activeSec));
+
+            ((TextView) findViewById(R.id.hapifork_stats_fork_servings_min)).setText(String.format("%d", currentMeal.forkServingPerMin));
+            ((TextView) findViewById(R.id.hapifork_ave_interval_value)).setText(currentMeal.averageInterval + "sec");
+            ((TextView) findViewById(R.id.hapifork_success_rate_value)).setText(Float.toString(currentMeal.successRatio) + "%");
+            ((TextView) findViewById(R.id.hapifork_stats_fork_servings_value)).setText(String.format("%d", currentMeal.forkServing));
+
+            if (currentMeal == null || currentMeal.photos == null || currentMeal.photos.size() <= 0) {
+                iv_mainPhoto.setImageResource(R.drawable.meal_hapifork_default);
+            }
+        }else{
+            hapiforkMeal_ll.setVisibility(View.GONE);
         }
     }
 
@@ -1415,6 +1456,45 @@ public class MealViewActivity extends HAPIActivity implements OnKeyListener,
         });
     }
     public void getMealFailedWithError(MessageObj messageObj){
+
+    }
+
+    // meal type option
+    public void showMealTypeOptions(View view) {
+
+        Resources res = getResources();
+        mealTypeArray = res.getStringArray(R.array.mealtype_array);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(mealTypeArray, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+
+                System.out.println("change meal type: " + mealTypeArray[item]);
+                switch (item){
+                    case 0:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(1);
+                        break;
+                    case 1:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(2);
+                        break;
+                    case 2:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(3);
+                        break;
+                    case 3:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(4);
+                        break;
+                    case 4:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(5);
+                        break;
+                    default:
+                        currentMeal.meal_type = Meal.MEAL_TYPE.getMealType(1);
+
+                }
+                ((TextView) findViewById(R.id.mealtitle)).setText(mealTypeArray[item] + " " +  getString(R.string.HAPIFORK_MEAL));
+            }
+        });
+        Dialog genericDialog = builder.create();
+        genericDialog.show();
 
     }
 }

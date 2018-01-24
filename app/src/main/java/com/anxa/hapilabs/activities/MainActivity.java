@@ -738,6 +738,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, M
         } else if (v.getId() == R.id.header_right_progress) {
             loadWeeklySummaryWebKit();
         } else if (v == calendarIcon) {
+            ApplicationEx.getInstance().fromUpgradeCrown = true;
             launchActivity(UpgradeActivity.class);
         } else if (fragmentIndex == 1) { //meals
             if (v.getId() == R.id.header_left || v.getId() == R.id.header_left_tv || v.getId() == R.id.badge_notif) {

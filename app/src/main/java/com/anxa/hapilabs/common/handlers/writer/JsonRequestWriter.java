@@ -395,6 +395,17 @@ public class JsonRequestWriter {
 
                 mealJson.put("description", meal.meal_description);
 
+                //hapifork stats
+                mealJson.put("forkServing", meal.forkServing);
+                mealJson.put("overspeed", meal.overSpeed);
+                mealJson.put("averageInterval", meal.averageInterval);
+                mealJson.put("forkServingsPerMinute", meal.forkServingPerMin);
+                mealJson.put("successRatio", meal.successRatio);
+                mealJson.put("overspeedRatio", meal.overSpeedRatio);
+                mealJson.put("overspeedRatio", meal.overSpeedRatio);
+                mealJson.put("isHapiForkMeal", meal.isHapiForkMeal);
+                mealJson.put("isPairedWithHapicoach", meal.isPairedWithHapicoach);
+
                 JSONObject foodgroupsObj = new JSONObject();
                 JSONArray foodgroupsArr = new JSONArray();
 

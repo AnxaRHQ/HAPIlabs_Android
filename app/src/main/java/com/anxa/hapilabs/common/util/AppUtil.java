@@ -3156,10 +3156,12 @@ public class AppUtil {
     public static List<Object> getCoachComments(List<Comment> allComments) {
         List<Object> coachComments = new ArrayList<Object>();
 
-        for (Comment comment : allComments) {
-            //community
-            if (comment.comment_type != 0){
-                coachComments.add(comment);
+        if (allComments != null) {
+            for (Comment comment : allComments) {
+                //community
+                if (comment.comment_type != 0) {
+                    coachComments.add(comment);
+                }
             }
         }
 
@@ -3210,6 +3212,17 @@ public class AppUtil {
         cal.set(Calendar.MILLISECOND, cal.getActualMaximum(Calendar.MILLISECOND));
 
         return cal.getTime();
+    }
+
+    public static String getDurationFormat(int sec){
+        String durationString = "";
+        int secValue = sec % 60;
+        int minValue = (int)Math.floor(sec/60);
+        int hrValue = minValue/60;
+
+        durationString = String.format("%02d", minValue) + ":" + String.format("%02d", secValue);
+
+        return durationString;
     }
 
 //    public static long stepsDateToTimeStamp(Date date){

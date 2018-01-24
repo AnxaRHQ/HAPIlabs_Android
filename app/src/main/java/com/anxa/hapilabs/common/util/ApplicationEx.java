@@ -171,6 +171,7 @@ public class ApplicationEx extends Application {
     public AlarmManager alarmMgr = null;
     public PendingIntent alarmIntent[] = new PendingIntent[9];
     public boolean fromFBConnect;
+    public boolean fromUpgradeCrown;
     Crashlytics crashlytics;
 
     public ApplicationEx() {

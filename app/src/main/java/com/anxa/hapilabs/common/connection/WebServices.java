@@ -64,6 +64,7 @@ public class WebServices {
         static final String getCoachProgramURL = "coach?command=get_coachprogram_bycoach&";
 
         static final String paymentURLWebString = "webkit/v1/payment?userId=%s&coachid=%@";
+        static final String paymentURLUpgradeWebString = "webkit/v1/payment?userId=%s&coachid=%@&upgrade=true";
         static final String paymentUpgradeURLWebString = "webkit/v1/payment?userId=%s";
         static final String questionURLWebString = "webkit/v1/Survey/Question?userId=%@";
         static final String postAnswerURLWebString = "survey?lang=" + ApplicationEx.language + "&command=post_survey_answer";
@@ -281,7 +282,8 @@ public class WebServices {
         POST_ACTIVITY_STEPS,
         GOOGLE_FIT_SUPPORT,
         GET_HAPICOACH_WEIGHT,
-        GET_HAPICOACH_STEPS
+        GET_HAPICOACH_STEPS,
+        GET_PAYMENTKIT_UPGRADE
     }
 
     public static String getCommand(SERVICES service) {
@@ -492,6 +494,9 @@ public class WebServices {
                 break;
             case GET_PAYMENTKIT:
                 url = (ConnectionType == CONNECTION.LIVE) ? (URL.liveDomainURLString + URL.paymentURLWebString) : (URL.qcDomainURLString + URL.paymentURLWebString);
+                break;
+            case GET_PAYMENTKIT_UPGRADE:
+                url = (ConnectionType == CONNECTION.LIVE) ? (URL.liveDomainURLString + URL.paymentURLUpgradeWebString) : (URL.qcDomainURLString + URL.paymentURLUpgradeWebString);
                 break;
             case GET_QUESTIONKIT:
                 url = (ConnectionType == CONNECTION.LIVE) ? (URL.liveDomainURLString + URL.questionURLWebString) : (URL.qcDomainURLString + URL.questionURLWebString);

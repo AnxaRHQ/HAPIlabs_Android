@@ -1086,4 +1086,22 @@
     <string name="GOOGLE_FIT_POPUP">Gérez les paramètres Google Fit</string>
     <string name="GOOGLE_FIT_STEP_COUNT_FAILED">Problème de récuperation de votre nombre de pas.</string>
 
+    <!--HAPIfork-->
+    <string name="HAPIFORK_MEAL">avec HAPIfork</string>
+    <string name="HAPIFORK_MEAL_DURATION">Durée</string>
+    <string name="HAPIFORK_MEAL_ACTIVE_MIN">Min actives</string>
+    <string name="HAPIFORK_MEAL_AVE_INTERVAL">Intervalle moyen</string>
+    <string name="HAPIFORK_MEAL_SUCCESS_RATE">Taux de succès</string>
+    <string name="HAPIFORK_MEAL_FORK_SERVINGS_MIN">Coups de fourchette par m</string>
+    <string name="HAPIFORK_MEAL_FORK_SERVINGS">Coups de fourchette</string>
+    <string-array name="mealtype_array">
+        <item name="MEAL_TYPE_BREAKFAST">Petit-déjeuner</item>
+        <item name="MEAL_TYPE_LUNCH">Déjeuner</item>
+        <item name="MEAL_TYPE_DINNER">Dîner</item>
+    </string-array>
+
+    <string name="btn_save_meal">Enregistrer le repas</string>
+    <string name="btn_discard">Annuler</string>
+
+
 </resources>

@@ -60,10 +60,8 @@ public class GetMealImplementer {
                     if (jsonResponseHandler.getResponseObj() != null && jsonResponseHandler.getResponseObj() instanceof Meal) {
                        Meal mealObj = (Meal) jsonResponseHandler.getResponseObj();
                         if (mealObj != null) {
-
                             //update runTime Meal
                            ApplicationEx.getInstance().currentMealView = mealObj;
-
                         }
                     }
 

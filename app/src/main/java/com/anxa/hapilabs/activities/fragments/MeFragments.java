@@ -99,46 +99,30 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
     }
 
     private void updateUI() {
-
-        System.out.println("updateUI");
         if (rootView != null) {
-
 //            check if user is null first - something wrong with the data
             if (ApplicationEx.getInstance().userProfile.getFirstname() == null && ApplicationEx.getInstance().userProfile.getLastname() == null) {
                 logout();
             } else {
                 //update user name tv = user_title
                 ((TextView) rootView.findViewById(R.id.user_title)).setText(ApplicationEx.getInstance().userProfile.getFirstname());
-//                ((TextView) rootView.findViewById(R.id.user_title)).setText(ApplicationEx.getInstance().userProfile.getFirstname() + " " + ApplicationEx.getInstance().userProfile.getLastname());
-
                 //joined date tv =  user_subtitle
                 if (ApplicationEx.getInstance().userProfile.getDate_joined() != null) {
-
                     if (ApplicationEx.language.equalsIgnoreCase("FR")) {
-
                         String joinedDate = getResources().getString(R.string.PROFILE_JOINED_SINCE) + " " + AppUtil.getDateinString(ApplicationEx.getInstance().userProfile.getDate_joined());
                         ((TextView) rootView.findViewById(R.id.user_subtitle)).setText(joinedDate);
-                    } else {
-
                     }
                 }
-
                 //profile photo tv =  user_avatar
                 if (ApplicationEx.getInstance().userProfile.getUserProfilePhoto() != null) {
                     ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(ApplicationEx.getInstance().userProfile.getUserProfilePhoto());
                 } else if (ApplicationEx.getInstance().userProfile.getUserProfilePhoto() == null) {
-
                     Bitmap bitmap = ImageManager.getInstance().findImage(ApplicationEx.getInstance().userProfile.getRegID());
-
                     if (bitmap != null) {
-
                         ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(bitmap);
                     } else {
-                        System.out.println("updateUI null bitmap==null");
-
                         ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.hapicoach_default_profilepic, ApplicationEx.getInstance().options_Profile));
                     }
-
                 } else {
                     ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.hapicoach_default_profilepic, ApplicationEx.getInstance().options_Profile));
                 }
@@ -153,15 +137,10 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
         this.context = getActivity();
 
         if (rootView == null) {
-
             rootView = inflater.inflate(R.layout.fragment_mywprofile, container, false);
-
-            //update the ui with user and coach profile pics
 
             //update user name tv = user_title
             ((TextView) rootView.findViewById(R.id.user_title)).setText(ApplicationEx.getInstance().userProfile.getFirstname());
-//            ((TextView) rootView.findViewById(R.id.user_title)).setText(ApplicationEx.getInstance().userProfile.getFirstname() + " " + ApplicationEx.getInstance().userProfile.getLastname());
-
             //joined date tv =  user_subtitle
             if (ApplicationEx.getInstance().userProfile.getDate_joined() != null) {
                 String joinedDate = getResources().getString(R.string.PROFILE_JOINED_SINCE) + " " + AppUtil.getDateinString(ApplicationEx.getInstance().userProfile.getDate_joined());
@@ -177,32 +156,18 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
                 } else {
                     ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.hapicoach_default_profilepic, ApplicationEx.getInstance().options_Profile));
                 }
-
             } else {
                 ((RoundedImageView) rootView.findViewById(R.id.user_avatar)).setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.hapicoach_default_profilepic, ApplicationEx.getInstance().options_Profile));
             }
 
-
             Coach userProfileCoach = ApplicationEx.getInstance().userProfile.getCoach();
-
             if (userProfileCoach != null) {
                 //update coach name tv = coach_title
-
                 String fullName = getResources().getString(R.string.PROFILE_MY_COACH);
-
                 if (userProfileCoach.firstname != null) {
                     fullName = fullName + " " + userProfileCoach.firstname;
                 }
-
-//                if (userProfileCoach.lastname != null) {
-//                    fullname = fullname + " " + userProfileCoach.lastname;
-//                }
-
-//                if (fullName != null)
                 ((TextView) rootView.findViewById(R.id.coach_title)).setText(fullName);
-//                else {
-                //no default value
-//                }
 
                 //coach subtitle tv =  coach_subtitle
                 if (ApplicationEx.language.equals("fr")) {
@@ -380,7 +345,7 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
     public void onClick(View v) {
         if (dialog != null && dialog.isShowing()) {
             if (v instanceof TextView && ((TextView) v).getText().toString().equals(getString(R.string.btn_ok))) {//now
-                //show Coach selecttion page
+                //show Coach selection page
                 callCoach();
                 dialog.dismiss();
             } else if (v instanceof TextView && ((TextView) v).getText().toString().equals(getString(R.string.btn_later))) {//later
@@ -390,13 +355,11 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
         }
 
         String url, label;
-
         try {
             url = (String) v.getTag(R.id.weblinksurl);
         } catch (Exception e) {
         }
         try {
-
             label = (String) v.getTag(R.id.weblinkslabel);
         } catch (Exception e) {
         }
@@ -407,14 +370,10 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
             } else {
                 myCoachProfile.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).updateHeader(6, this);
-
             }
-
         } else if (v.getId() == R.id.profile_myhelplink) {
             helpAndContact.setVisibility(View.VISIBLE);
-
             ((MainActivity) getActivity()).updateHeader(5, this);
-
         } else if (v.getTag(R.id.weblinksurl) != null) {
             if (v.getTag(R.id.weblinksurl).equals("LOGOUT")) {
                 //to do logout here;
@@ -423,12 +382,14 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
                 //launch about native page
                 loadAboutPage();
             } else {
-                System.out.println("loadwebkit: " + v.getTag());
+                System.out.println("loadwebkit: " + v.getTag(R.id.weblinksurl).toString() + v.getTag(R.id.weblinkslabel).toString());
+                if (v.getTag(R.id.weblinkslabel).toString().equalsIgnoreCase("Subscription")){
+                    ApplicationEx.getInstance().fromUpgradeCrown = false;
+                }
                 loadWebKit(v.getTag(R.id.weblinksurl).toString(), v.getTag(R.id.weblinkslabel).toString());
             }
 
         } else if (v.getTag() == null) {
-
             if (v.getId() == R.id.header_left || v.getId() == R.id.header_left_tv) {
                 if ((helpAndContact != null && helpAndContact.getVisibility() == View.VISIBLE) || (myCoachProfile != null && myCoachProfile.getVisibility() == View.VISIBLE)) {
                     if (helpAndContact != null)
@@ -445,6 +406,7 @@ public class MeFragments extends Fragment implements OnClickListener, ProgressCh
                 }
             } else if (v.getId() == R.id.header_title || v.getId() == R.id.header_title_iv) {
             } else if (v.getId() == R.id.header_right) {
+                ApplicationEx.getInstance().fromUpgradeCrown = true;
                 Intent intent = new Intent(this.getActivity(), UpgradeActivity.class);
                 this.getActivity().startActivity(intent);
             }

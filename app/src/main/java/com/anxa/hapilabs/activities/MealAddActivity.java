@@ -37,8 +37,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -120,10 +122,13 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
 
     private LinearLayout mealFoodGroupLayout;
     private LinearLayout mealRatingLayout;
+    private LinearLayout hapiforkStatsLayout;
 
     private Meal mealToAdd;
     private TimePicker timepicker;
     private List<ImageButton> foodGroups;
+
+    private String [] mealTypeArray;
 
     private int descRemainCount = 250;
     private int DATE_YEAR;
@@ -179,6 +184,7 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         activeMealLayout = (LinearLayout) findViewById(R.id.addmealLayout);
         mealFoodGroupLayout = (LinearLayout) findViewById(R.id.meal_food_group_ll);
         mealRatingLayout = (LinearLayout) findViewById(R.id.meal_rating_ll);
+        hapiforkStatsLayout = (LinearLayout) findViewById(R.id.meal_hapifork_stats_ll);
 
         mealRatingText = (TextView) findViewById(R.id.meal_rating_text);
 
@@ -229,6 +235,7 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         showSavingLayout(false, false);
 
         initFoodGroups();
+        ((ImageView) findViewById(R.id.hapifork_meal_arrow)).setVisibility(View.GONE);
 
         if (ApplicationEx.getInstance().userRatingSetting) {
             mealRatingLayout.setVisibility(View.VISIBLE);
@@ -239,6 +246,8 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         }
 
         if (mealViewState == Meal.MEALSTATE_ADD) {
+
+            hapiforkStatsLayout.setVisibility(View.GONE);
 
             mealToAdd = new Meal();
             mealToAdd.meal_type = mealtype;
@@ -331,6 +340,42 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
             }
 
             mealRatingBar.setRating(mealToAdd.userRating);
+
+            //if hapifork meal
+            if (mealToAdd.isHapiForkMeal){
+
+                updateHeader(4, getString(R.string.btn_editmeal), this);
+
+                ((ImageView) findViewById(R.id.hapifork_meal_arrow)).setVisibility(View.VISIBLE);
+                mealFoodGroupLayout.setVisibility(View.GONE);
+                mealRatingLayout.setVisibility(View.GONE);
+                hapiforkStatsLayout.setVisibility(View.VISIBLE);
+
+                System.out.println("hapifork meal:" + AppUtil.getDurationFormat(mealToAdd.mealDuration));
+                ((TextView) findViewById(R.id.hapifork_duration_value)).setText(AppUtil.getDurationFormat(mealToAdd.mealDuration));
+
+                int activeSec = mealToAdd.forkServing * mealToAdd.averageInterval;
+
+                System.out.println("hapifork activeSec:" + activeSec + " forkserving: " + mealToAdd.forkServing + " averageInterval: " + mealToAdd.averageInterval);
+
+                ((TextView) findViewById(R.id.hapifork_active_min_value)).setText(AppUtil.getDurationFormat(activeSec));
+                ((TextView) findViewById(R.id.hapifork_stats_fork_servings_min)).setText(String.format("%d", mealToAdd.forkServingPerMin));
+                ((TextView) findViewById(R.id.hapifork_ave_interval_value)).setText(mealToAdd.averageInterval + "sec");
+                ((TextView) findViewById(R.id.hapifork_success_rate_value)).setText(Float.toString(mealToAdd.successRatio) + "%");
+                ((TextView) findViewById(R.id.hapifork_stats_fork_servings_value)).setText(String.format("%d", mealToAdd.forkServing));
+
+                ((TextView) findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(this, mealToAdd.meal_type) + " " +  getString(R.string.HAPIFORK_MEAL));
+
+                if(!mealToAdd.isPairedWithHapicoach){
+                    System.out.println("meal not paired with hapicoach: " + mealToAdd.meal_description);
+                    mealDesc.setText("");
+                }else{
+                    mealDesc.setText(mealToAdd.meal_description);
+                    System.out.println("meal paired with hapicoach: " + mealToAdd.meal_description);
+                }
+            }else{
+                hapiforkStatsLayout.setVisibility(View.GONE);
+            }
         }
 
         //set date
@@ -341,7 +386,8 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         DATE_MONTH = c.get(Calendar.MONTH) + 1;
         DATE_DAY = c.get(Calendar.DAY_OF_MONTH);
 
-        ((TextView) findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(this, mealToAdd.meal_type)); //imageview
+        if (!mealToAdd.isHapiForkMeal)
+            ((TextView) findViewById(R.id.mealtitle)).setText(AppUtil.getMealTitle(this, mealToAdd.meal_type));
 
         mealDesc = ((EditText) findViewById(R.id.mealdesc));
         mealDesc.addTextChangedListener(new TextWatcher() {
@@ -445,6 +491,8 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         }
 
         if (!hasSubmitted) {
+
+            System.out.println("hapifork !hasSubmitted");
             List<FOODGROUP> foodgroup = new ArrayList<Meal.FOODGROUP>();
             for (int i = 0; i < foodGroups.size(); i++) {
 
@@ -483,9 +531,10 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
             //public Date meal_creation_date;  //date of the meal(date tab)
 
 
-            if (!isUpdate) { // use the previous time stamp from
+            if (!isUpdate) { // use the current time stamp
                 mealToAdd.timestamp = AppUtil.getCurrentDateinDate();
                 mealToAdd.meal_id = UniqueIDgen();
+                System.out.println("hapifork !update");
             }
 
             mealToAdd.userRating = Math.round(mealRatingBar.getRating());
@@ -495,13 +544,16 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
             }
 
             if (mealToAdd.photos != null && mealToAdd.photos.size() > 0) {
+                System.out.println("hapifork with photo");
+
                 intent.putExtra("withphoto", true);
             } else {
+                System.out.println("hapifork no photo");
+
                 intent.putExtra("withphoto", false);
             }
 
             intent.putExtra("tempmealid", mealToAdd.meal_id);
-
 
             ApplicationEx.getInstance().mealsToAdd.put(mealToAdd.meal_id, mealToAdd);
 
@@ -516,7 +568,10 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
                 DaoImplementer dao = new DaoImplementer(daomeal, this);
                 dao.addMeal(mealToAdd);
 
-            } else { //updated
+                System.out.println("hapifork Meal.MEALSTATE_ADD");
+
+            } else { //update
+                System.out.println("hapifork Meal.UPDATE");
 
                 MealDAO daomeal = new MealDAO(this, null);
                 DaoImplementer dao = new DaoImplementer(daomeal, this);
@@ -530,10 +585,24 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
             hasSubmitted = true;
 
             if (isUpdate || isDeleted) {
-                setResult(RESULT_OK, intent);
-                finish();
+                System.out.println("hapifork isUpdate || isDeleted");
+
+                if (mealToAdd.isHapiForkMeal && !mealToAdd.isPairedWithHapicoach){
+                    //add progress display here
+                    if (mealToAdd.photos != null && mealToAdd.photos.size() > 0) {
+                        System.out.println("hapifork isUpdate || isDeleted with photo");
+
+                        processPostMeal(true, ApplicationEx.getInstance().currentMealView.meal_id);
+                    } else
+                        processPostMeal(false, ApplicationEx.getInstance().currentMealView.meal_id);
+                }else {
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
 
             } else { //process meal on this stage for add meal only.
+
+                System.out.println("hapifork addMeal");
 
                 //add progress display here
                 if (mealToAdd.photos != null && mealToAdd.photos.size() > 0) {
@@ -700,6 +769,8 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
         } else if (v == btn_submit) {
             //submit button
             fetchMeal(false, false);
+        } else if (v.getId() == R.id.hapifork_meal_arrow) {
+            //arrow button
         }
     }
 
@@ -1383,6 +1454,48 @@ public class MealAddActivity extends HAPIActivity implements OnClickListener, On
     }
 
     private void updateRatingView() {
+
+    }
+
+
+
+
+    // meal type option
+    public void showMealTypeOptions(View view) {
+
+        Resources res = getResources();
+        mealTypeArray = res.getStringArray(R.array.mealtype_array);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(mealTypeArray, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+
+                System.out.println("change meal type: " + mealTypeArray[item]);
+                switch (item){
+                    case 0:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(1);
+                        break;
+                    case 1:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(2);
+                        break;
+                    case 2:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(3);
+                        break;
+                    case 3:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(4);
+                        break;
+                    case 4:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(5);
+                        break;
+                    default:
+                        mealToAdd.meal_type = MEAL_TYPE.getMealType(1);
+
+                }
+                ((TextView) findViewById(R.id.mealtitle)).setText(mealTypeArray[item] + " " +  getString(R.string.HAPIFORK_MEAL));
+            }
+        });
+        Dialog genericDialog = builder.create();
+        genericDialog.show();
 
     }
 }

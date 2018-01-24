@@ -18,9 +18,9 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:orientation="horizontal"
-            android:weightSum="5"
+            android:paddingBottom="5dp"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:weightSum="5">
 
             <TextView
                 android:id="@+id/mealtitle"
@@ -38,9 +38,9 @@
                 android:id="@+id/mealtime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:layout_centerVertical="true"
                 android:text="8:34 AM" />
         </LinearLayout>
 
@@ -223,6 +223,7 @@
 
         <TextView
             android:id="@+id/mealdesc"
+            style="@style/darkGrayNormal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/icon_container_approved"
@@ -230,8 +231,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-            android:text="@string/MEAL_OPTIONS_NAV_HEADER"
-            style="@style/darkGrayNormal"/>
+            android:text="@string/MEAL_OPTIONS_NAV_HEADER" />
 
         <View
             android:id="@+id/separate"
@@ -243,234 +243,263 @@
             android:layout_marginRight="10dp"
             android:background="@color/tw__transparent" />
 
+
         <LinearLayout
-            android:id="@+id/rating_container"
-            android:layout_width="fill_parent"
+            android:id="@+id/content_ll"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/separate"
             android:orientation="vertical"
             android:visibility="visible">
 
             <LinearLayout
-                android:id="@+id/coach_rating_container"
+                android:id="@+id/rating_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/separate"
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/coach_rating_container"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center"
-                    android:text="@string/MEAL_RATING_COACH"
-                    android:textColor="@color/text_blackgray"
-                    android:textSize="14sp" />
+                    android:layout_below="@id/separate"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
-                <RatingBar
-                    android:id="@+id/coachRatingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:progressDrawable="@drawable/ratingbarstar_view"
-                    android:rating="1"
-                    android:stepSize="1.0" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:text="@string/MEAL_RATING_COACH"
+                        android:textColor="@color/text_blackgray"
+                        android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/coach_rating_text"
-                    android:layout_width="match_parent"
+                    <RatingBar
+                        android:id="@+id/coachRatingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:progressDrawable="@drawable/ratingbarstar_view"
+                        android:rating="1"
+                        android:stepSize="1.0" />
+
+                    <TextView
+                        android:id="@+id/coach_rating_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:text="@string/MEAL_RATING_EVALUATE_1"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/personal_rating_container"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    android:text="@string/MEAL_RATING_EVALUATE_1"
-                    android:textSize="14sp" />
+                    android:layout_below="@id/separate"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/MEAL_RATING_PERSONAL"
+                        android:textColor="@color/text_blackgray"
+                        android:textSize="14sp" />
+
+                    <RatingBar
+                        android:id="@+id/personalRatingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:progressDrawable="@drawable/ratingbarstar_view"
+                        android:rating="5"
+                        android:stepSize="1.0" />
+
+                    <TextView
+                        android:id="@+id/personal_rating_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:text="@string/MEAL_RATING_EVALUATE_5"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <View
+                android:id="@+id/rating_separator"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/rating_container"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/tw__transparent"
+                android:visibility="visible" />
+
             <LinearLayout
-                android:id="@+id/personal_rating_container"
+                android:id="@+id/fg_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/separate"
+                android:layout_below="@id/rating_separator"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/row1"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="@string/MEAL_RATING_PERSONAL"
-                    android:textColor="@color/text_blackgray"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="3">
 
-                <RatingBar
-                    android:id="@+id/personalRatingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
+                    <ImageButton
+                        android:id="@+id/fg_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_drinks"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/fg_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_vegetable"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/fg_3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_sweets"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row2"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:progressDrawable="@drawable/ratingbarstar_view"
-                    android:rating="5"
-                    android:stepSize="1.0" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/personal_rating_text"
-                    android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/fg_4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_fruit"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/fg_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_starch"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/fg_6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_protein"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row3"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    android:text="@string/MEAL_RATING_EVALUATE_5"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="3">
 
+                    <ImageButton
+                        android:id="@+id/fg_7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_dairy"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/fg_8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/button_foodgroup_fat"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--start of hapifork stats-->
+            <LinearLayout
+                android:id="@+id/meal_hapifork_stats_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/separate"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <include
+                    android:id="@+id/hapifork_stats_ll"
+                    layout="@layout/hapifork_stats" />
             </LinearLayout>
 
         </LinearLayout>
 
+
         <View
-            android:id="@+id/rating_separator"
+            android:id="@+id/comment_separator"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/rating_container"
+            android:layout_below="@id/content_ll"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:background="@color/tw__transparent"
             android:visibility="visible" />
 
-        <LinearLayout
-            android:id="@+id/fg_container"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rating_separator"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/row1"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/fg_1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_drinks"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/fg_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_vegetable"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/fg_3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_sweets"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/row2"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/fg_4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_fruit"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/fg_5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_starch"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/fg_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_protein"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/row3"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/fg_7"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_dairy"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/fg_8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/button_foodgroup_fat"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <!--<View-->
-        <!--android:id="@+id/separate1"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_below="@id/fg_container"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:background="@color/common_gray_separator" />-->
 
         <LinearLayout
             android:id="@+id/meal_comments_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/fg_container"
+            android:layout_below="@+id/comment_separator"
             android:orientation="vertical">
 
             <TextView
@@ -544,22 +573,22 @@
                     android:id="@+id/hapi4u_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:src="@drawable/hapi4u_blue"
                     android:clickable="true"
-                    android:onClick="postHAPI4U"/>
+                    android:onClick="postHAPI4U"
+                    android:paddingLeft="10dp"
+                    android:src="@drawable/hapi4u_blue" />
 
                 <TextView
                     android:id="@+id/hapi4u_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/hapi4u_iv"
+                    android:clickable="true"
+                    android:onClick="postHAPI4U"
                     android:paddingLeft="10dp"
                     android:text="HAPI 4U"
                     android:textColor="@color/text_blue_comment"
-                    android:textSize="16dp"
-                    android:clickable="true"
-                    android:onClick="postHAPI4U"/>
+                    android:textSize="16dp" />
 
                 <com.anxa.hapilabs.ui.RoundedImageView
                     android:id="@+id/hapi4u_avatar"
@@ -581,22 +610,22 @@
 
                 <TextView
                     android:id="@+id/hapi4u_num_label"
+                    style="@style/whiteNormal"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:text="2"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    style="@style/whiteNormal"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:text="2" />
 
                 <ImageView
                     android:id="@+id/hapi4u_smiley"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:src="@drawable/meal_smiley_orange"
                     android:layout_alignBottom="@+id/hapi4u_avatar"
+                    android:layout_alignEnd="@+id/hapi4u_avatar"
                     android:layout_alignRight="@+id/hapi4u_avatar"
-                    android:layout_alignEnd="@+id/hapi4u_avatar" />
+                    android:src="@drawable/meal_smiley_orange" />
 
             </RelativeLayout>
 

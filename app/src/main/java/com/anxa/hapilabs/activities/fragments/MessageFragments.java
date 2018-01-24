@@ -255,6 +255,7 @@ public class MessageFragments extends Fragment implements OnClickListener,
             if (dialog != null)
                 dialog.dismiss();
         } else if (v.getId() == R.id.header_right) {
+            ApplicationEx.getInstance().fromUpgradeCrown = true;
             Intent intent = new Intent(getActivity(), UpgradeActivity.class);
             this.getActivity().startActivity(intent);
         }

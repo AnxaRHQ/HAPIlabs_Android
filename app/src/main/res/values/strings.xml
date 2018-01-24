@@ -28,12 +28,13 @@
     <string name="btn_no">No</string>
     <string name="btn_ok">OK</string>
     <string name="btn_save">Save</string>
-    <string name="btn_savemeal">Save Meal</string>
     <string name="btn_continue">Continue</string>
     <string name="btn_premium" translatable="false">Premium</string>
     <string name="btn_now" translatable="false">Now</string>
     <string name="btn_later">Later</string>
     <string name="btn_delete">Delete</string>
+    <string name="btn_discard">Discard</string>
+    <string name="btn_save_meal">Save meal</string>
     <string name="btn_retry">Retry</string>
     <string name="btn_done">Done</string>
     <string name="btn_gotit">I want to start now</string>
@@ -1345,5 +1346,23 @@
     <string name="GOOGLE_FIT_HEADER">Google Fit</string>
     <string name="GOOGLE_FIT_POPUP">Manage Google Fit settings</string>
     <string name="GOOGLE_FIT_STEP_COUNT_FAILED">There was a problem getting the step count</string>
+
+
+    <!--HAPIfork-->
+    <string name="HAPIFORK_MEAL">with HAPIfork</string>
+    <string name="HAPIFORK_MEAL_DURATION">Duration</string>
+    <string name="HAPIFORK_MEAL_ACTIVE_MIN">Active Minutes</string>
+    <string name="HAPIFORK_MEAL_AVE_INTERVAL">Ave. Interval</string>
+    <string name="HAPIFORK_MEAL_SUCCESS_RATE">Success Rate</string>
+    <string name="HAPIFORK_MEAL_FORK_SERVINGS_MIN">Fork Servings/min</string>
+    <string name="HAPIFORK_MEAL_FORK_SERVINGS">Fork Servings</string>
+
+    <string-array name="mealtype_array">
+        <item name="MEAL_TYPE_BREAKFAST">Breakfast</item>
+        <item name="MEAL_TYPE_MORNING_SNACK">Morning Snack</item>
+        <item name="MEAL_TYPE_LUNCH">Lunch</item>
+        <item name="MEAL_TYPE_AFTERNOON_SNACK">Afternoon Snack</item>
+        <item name="MEAL_TYPE_DINNER">Dinner</item>
+    </string-array>
 
 </resources>

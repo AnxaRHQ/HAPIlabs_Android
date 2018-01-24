@@ -11,6 +11,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
+import com.anxa.hapilabs.common.connection.listener.MealDeleteListener;
+import com.anxa.hapilabs.common.connection.listener.ProgressChangeListener;
+import com.anxa.hapilabs.controllers.addmeal.DeleteMealController;
 import com.anxa.hapilabs.models.Weight;
 import com.hapilabs.R;
 import com.anxa.hapilabs.activities.CoachSelectionActivity;
@@ -50,6 +53,8 @@ import com.anxa.hapilabs.ui.DatePagerLayout;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +74,7 @@ import android.support.v4.app.Fragment;
 
 @SuppressLint("NewApi")
 public class MealsFragments extends Fragment implements OnClickListener,
-        DateChangeListener, SyncListener, BitmapDownloadListener {
+        DateChangeListener, SyncListener, BitmapDownloadListener, MealDeleteListener, ProgressChangeListener {
 
     private Context context;
     OnClickListener listener;
@@ -82,7 +87,7 @@ public class MealsFragments extends Fragment implements OnClickListener,
     private List<Meal> selectedDailyList = new ArrayList<>();
     private List<HapiMoment> selectedDailyHAPImomenList = new ArrayList<>();
     private List<Workout> selectedDailyWorkoutList = new ArrayList<>();
-    private List<Weight> selectedDailyWeightList  = new ArrayList<>();
+    private List<Weight> selectedDailyWeightList = new ArrayList<>();
     private MealListFragment mealList;
     private int selectedDayIndex = 0;
 
@@ -113,6 +118,8 @@ public class MealsFragments extends Fragment implements OnClickListener,
     private Thread bitmapThread;
 
     RelativeLayout hapimomentListContainer;
+
+    private Meal currentMeal;
 
     @Override
     public void onResume() {
@@ -298,7 +305,7 @@ public class MealsFragments extends Fragment implements OnClickListener,
         commentCountPerWeek = AppUtil.getCommentCountPerWeek(weeklyMeal);
         weeklyHapiMoments = AppUtil.getHapimomentsByDateRange(toDateUI, fromDateUI,
                 ApplicationEx.getInstance().tempHapimomentList, dayOfWeek + 1);
-        weeklyWeight= AppUtil.getWeightByDateRange(toDateUI, fromDateUI,
+        weeklyWeight = AppUtil.getWeightByDateRange(toDateUI, fromDateUI,
                 ApplicationEx.getInstance().tempWeightList, dayOfWeek + 1);
 //        weeklyHapiMoments = AppUtil.getHapimomentsByDateRange(toDate, fromDate,
 //                ApplicationEx.getInstance().tempHapimomentList, dayOfWeek + 1);
@@ -389,9 +396,25 @@ public class MealsFragments extends Fragment implements OnClickListener,
             if (v.getTag() != null && v.getTag() instanceof MEAL_TYPE) {
                 displayInfo((MEAL_TYPE) v.getTag());
             }
+        } else if (v.getId() == R.id.hapifork_discard_meal) {
+            System.out.println("onClick discard meal: " + v.getTag());
+                deleteMeal((Meal) v.getTag());
+
+        } else if (v.getId() == R.id.hapifork_save_meal) {
+            System.out.println("onClick save meal: " + v.getTag());
+            if (v.getTag() instanceof Meal) {
+                editMeal((Meal) v.getTag());
+            }
+
         } else if (v.getTag() != null) {
             if (v.getTag() instanceof Meal) {
-                viewMeal((Meal) v.getTag());
+                if (((Meal) v.getTag()).isHapiForkMeal) {
+                    if (((Meal) v.getTag()).isPairedWithHapicoach) {
+                        viewMeal((Meal) v.getTag());
+                    }
+                }else{
+                    viewMeal((Meal) v.getTag());
+                }
             } else {
 
                 System.out.println("onClick getTag: " + v.getTag());
@@ -403,10 +426,10 @@ public class MealsFragments extends Fragment implements OnClickListener,
             Intent intent = new Intent(getActivity(), NotificationActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.header_right) {
+            ApplicationEx.getInstance().fromUpgradeCrown = true;
             Intent intent = new Intent(getActivity(), UpgradeActivity.class);
             startActivity(intent);
-        }
-        else {
+        } else {
             viewMeal((Meal) v.getTag());
         }
     }
@@ -427,6 +450,33 @@ public class MealsFragments extends Fragment implements OnClickListener,
         Intent mainIntent;
         mainIntent = new Intent(this.getActivity(), MealViewActivity.class);
         this.getActivity().startActivityForResult(mainIntent, ApplicationEx.REQUESTCODE_MEALVIEW);
+    }
+
+    DeleteMealController deleteMealController;
+
+    private void deleteMeal(Meal currentMeal1) {
+        currentMeal = currentMeal1;
+        final Meal currentMealToDelete = currentMeal1;
+
+        if (deleteMealController == null) {
+            deleteMealController = new DeleteMealController(this.getActivity(), this, this, Meal.MEALSTATE_DELETE);
+        }
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                deleteMealController.deleteMeal(currentMealToDelete, ApplicationEx.getInstance().userProfile.getRegID());
+            }
+        });
+    }
+
+    private void editMeal(Meal meal) {
+        ApplicationEx.getInstance().currentMealView = meal;
+
+        Intent mainIntent;
+        mainIntent = new Intent(this.getActivity(), MealAddActivity.class);
+        mainIntent.putExtra("MEAL_STATE_VIEW", Meal.MEALSTATE_EDIT);
+        mainIntent.putExtra("MEAL_TYPE", meal.meal_type.getValue());
+        this.startActivityForResult(mainIntent, ApplicationEx.REQUESTCODE_MEALEDIT);
     }
 
     @Override
@@ -789,4 +839,59 @@ public class MealsFragments extends Fragment implements OnClickListener,
     public void goToNextWeek(View view) {
         dateC.goToNextWeek();
     }
+
+    //delete meal listener
+    @Override
+    public void deleteMealSuccess(String response) {
+
+        //delete from DB:
+        MealDAO daomeal = new MealDAO(this.getActivity(), null);
+        DaoImplementer dao = new DaoImplementer(daomeal, this.getContext());
+        dao.deleteMeal(currentMeal);
+
+        //delete from the list
+        ApplicationEx.getInstance().tempList.remove(currentMeal.meal_id);
+
+        Intent broadint = new Intent();
+        broadint.setAction(context.getResources().getString(R.string.broadcast_sync));
+        context.sendBroadcast(broadint);
+    }
+
+    @Override
+    public void deleteMealError(MessageObj response, String entryID) {
+
+        String message;
+
+        if (response.getMessage_string().contains("offline")) {
+            message = getResources().getString(R.string.ALERTMESSAGE_OFFLINE);
+        } else {
+            message = response.getMessage_string();
+        }
+
+//        final String messageDialog = message;
+//        //else if message is offline: display offline alert message
+//        Handler mHandler = new Handler(Looper.getMainLooper());
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                progressBar.setVisibility(View.GONE);
+//                showCustomDialog(messageDialog, null);
+//            }
+//        });
+    }
+
+    @Override
+    public void startProgress() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void stopProgress() {
+        // TODO Auto-generated method stub
+
+    }
+
+
 }
+

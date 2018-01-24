@@ -408,6 +408,17 @@ public class JsonUtil {
             meal.userRating = json.optInt("userRating");
         }
 
+        if (meal.isHapiForkMeal){
+            //get mealStats
+            meal.successRatio = (float)json.optDouble("successRatio");
+            meal.overSpeedRatio = (float)json.optDouble("overspeedRatio");
+            meal.mealDuration = json.optInt("mealDuration");
+            meal.overSpeed = json.optInt("overspeed");
+            meal.forkServing = json.optInt("forkServing");
+            meal.forkServingPerMin = json.optInt("forkServingsPerMinute");
+            meal.averageInterval = json.optInt("averageInterval");
+        }
+
         JSONObject album;
         try {
             try {

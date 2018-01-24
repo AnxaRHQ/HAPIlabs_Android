@@ -97,7 +97,12 @@ public class PaymentQuestionActivity extends HAPIActivity implements OnClickList
             case STATE_PAYMENT:
 
                 updateHeader(7, getResources().getString(R.string.PAYMENT_HEADER_TITLE), this);
-                url = WebServices.getURL(SERVICES.GET_PAYMENTKIT);
+
+                if (ApplicationEx.getInstance().fromUpgradeCrown) {
+                    url = WebServices.getURL(SERVICES.GET_PAYMENTKIT_UPGRADE);
+                }else{
+                    url = WebServices.getURL(SERVICES.GET_PAYMENTKIT);
+                }
 
                 url = url.replace("%@", WEB_ID);
 
